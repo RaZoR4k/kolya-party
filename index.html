@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#E8262C" />
+<title>Приглашение · День рождения</title>
+<meta name="description" content="Приглашение на день рождения: план вечера, как добраться, музыка, правила и коктейли." />
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     Шрифты: Russo One (заголовки), Unbounded (крупные цифры),
+     Golos Text (текст, «родной» для русского), Neucha (рукописные пометки).
+     Все поддерживают кириллицу.
+════════════════════════════════════════════════════════════════════════════ -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Unbounded:wght@700;800;900&family=Golos+Text:wght@400;500;600;700&family=Neucha&display=swap" rel="stylesheet" />
+
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   1. ТОКЕНЫ (цвета — «печатная» палитра: тёплая бумага, чернила, красный, синий)
+═══════════════════════════════════════════════════════════════════════════ */
+:root{
+  --paper:#F6EFDD;        /* основной фон — тёплая газетная бумага (не белый!) */
+  --paper-warm:#EFE3C4;   /* фон панелей/карточек */
+  --ink:#14110F;          /* тёмные чернила: контуры, текст, тени */
+  --ink-soft:#2A2622;
+  --red:#E8262C;          /* главный «плашечный» красный */
+  --red-deep:#B01217;
+  --red-txt:#C1121F;      /* красный ТОЛЬКО для мелкого текста (контраст AA) */
+  --blue:#1B57B0;         /* синий акцент */
+  --blue-deep:#0E2E63;    /* синий для мелкого текста */
+  --caption:#F7D23E;      /* жёлтые «титры» / плашки */
+  --halftone:#EF6A70;     /* растровые точки (Ben-Day), красные */
+  --halftone-b:#6E9BE0;   /* растровые точки, синие */
+  --shadow:6px 6px 0 var(--ink);
+  --shadow-lg:9px 9px 0 var(--ink);
+  --wobble:255px 15px 225px 15px/15px 225px 15px 255px; /* «рисованные от руки» углы */
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   2. БАЗА
+═══════════════════════════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Golos Text',system-ui,sans-serif;
+  font-size:clamp(1rem,.95rem + .3vw,1.15rem);
+  line-height:1.6;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+/* Зерно бумаги + лёгкая «печатная» текстура */
+body::before{
+  content:"";position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:.09;mix-blend-mode:multiply;
+}
+img{max-width:100%;display:block}
+a{color:var(--blue-deep)}
+::selection{background:var(--red);color:#fff}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+
+.wrap{max-width:1100px;margin-inline:auto;padding-inline:clamp(1rem,4vw,2.5rem)}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   3. ТИПОГРАФИКА
+═══════════════════════════════════════════════════════════════════════════ */
+h1,h2,h3{margin:0;line-height:1;font-weight:400}
+.eyebrow{
+  display:inline-block;font-family:'Golos Text';font-weight:700;font-size:.72rem;
+  text-transform:uppercase;letter-spacing:.18em;color:var(--ink);
+  background:var(--caption);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);
+  padding:.4em .7em;
+}
+.hand{font-family:'Neucha',cursive;font-weight:400}
+
+/* Заголовок раздела «штампом» */
+.sec-head{position:relative;margin-bottom:clamp(1.5rem,4vw,2.5rem)}
+.sec-num{
+  font-family:'Unbounded';font-weight:900;font-size:clamp(2.5rem,9vw,5rem);
+  color:transparent;-webkit-text-stroke:2px var(--ink);
+  display:block;line-height:.8;opacity:.5;
+}
+.sec-title{
+  font-family:'Russo One';text-transform:uppercase;font-size:clamp(1.9rem,6.5vw,3.4rem);
+  letter-spacing:-.01em;color:var(--ink);
+  text-shadow:3px 3px 0 var(--red),6px 6px 0 var(--blue);
+  margin-top:-.15em;
+}
+.sec-sub{max-width:46ch;font-size:1.02rem;margin:.8rem 0 0;color:var(--ink-soft)}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   4. КОМПОНЕНТЫ: панель, растр, паутина, титры, кнопка
+═══════════════════════════════════════════════════════════════════════════ */
+.panel-card{
+  position:relative;background:var(--paper);border:4px solid var(--ink);
+  box-shadow:var(--shadow-lg);padding:clamp(1.1rem,3.5vw,1.8rem);
+  overflow:hidden;
+}
+.panel-card.warm{background:var(--paper-warm)}
+.panel-card.wobble{border-radius:var(--wobble)}
+
+/* Растровые точки Ben-Day */
+.hf{
+  background-color:var(--paper);
+  background-image:radial-gradient(var(--halftone) 22%,transparent 23%);
+  background-size:11px 11px;
+}
+.hf-b{background-image:radial-gradient(var(--halftone-b) 22%,transparent 23%)}
+.hf-fade{-webkit-mask-image:linear-gradient(135deg,#000,transparent 72%);mask-image:linear-gradient(135deg,#000,transparent 72%)}
+
+/* Паутина в углу */
+.web{position:absolute;width:88px;height:88px;opacity:.42;pointer-events:none;z-index:2}
+.web--tl{top:-2px;left:-2px}
+.web--tr{top:-2px;right:-2px;transform:scaleX(-1)}
+.web--br{bottom:-2px;right:-2px;transform:scale(-1,-1)}
+.web--bl{bottom:-2px;left:-2px;transform:scaleY(-1)}
+
+/* Паучок-глиф */
+.spider{width:52px;height:52px;overflow:visible}
+
+/* Жёлтая плашка «титров» */
+.caption-box{
+  display:inline-block;background:var(--caption);border:3px solid var(--ink);
+  box-shadow:4px 4px 0 var(--ink);padding:.45em .7em;
+  font-weight:700;color:var(--ink);
+}
+
+/* Кнопки — «веб-шутер»: при наведении выстреливает белая паутинка */
+.btn{
+  --bg:var(--caption);--fg:var(--ink);
+  position:relative;display:inline-flex;align-items:center;gap:.55em;
+  font-family:'Golos Text';font-weight:700;font-size:1rem;line-height:1.2;
+  text-decoration:none;color:var(--fg);background:var(--bg);
+  border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);
+  padding:.75em 1.05em;cursor:pointer;overflow:hidden;
+  transition:transform .12s,box-shadow .12s;min-height:44px;
+}
+.btn:hover,.btn:focus-visible{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink)}
+.btn--red{--bg:var(--red);--fg:#fff}
+.btn--blue{--bg:var(--blue);--fg:#fff}
+.btn::after{
+  content:"";position:absolute;left:0;top:50%;height:3px;width:120%;
+  background:linear-gradient(90deg,#fff,transparent);
+  transform:translateY(-50%) scaleX(0);transform-origin:left;opacity:0;
+  transition:transform .22s ease-out,opacity .22s;pointer-events:none;
+}
+.btn:hover::after,.btn:focus-visible::after{transform:translateY(-50%) scaleX(1);opacity:.55}
+.btn .ico{width:1.15em;height:1.15em;flex:none}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   5. ШАПКА + ВКЛАДКИ (сверху на десктопе, снизу на мобильном)
+═══════════════════════════════════════════════════════════════════════════ */
+.site-header{
+  position:sticky;top:0;z-index:50;background:var(--paper);
+  border-bottom:4px solid var(--ink);
+}
+.header-inner{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;padding:.6rem 0}
+.brand{display:flex;align-items:center;gap:.55rem;font-weight:700}
+.brand .spider{width:34px;height:34px}
+.brand-text{font-family:'Russo One';text-transform:uppercase;letter-spacing:.02em;font-size:1rem}
+.brand-text small{display:block;font-family:'Neucha';font-weight:400;letter-spacing:0;
+  text-transform:none;font-size:.85rem;color:var(--red-txt);line-height:1}
+
+.tabs{display:flex;gap:.35rem;margin-left:auto;flex-wrap:wrap}
+.tab{
+  font-family:'Golos Text';font-weight:700;background:transparent;border:3px solid transparent;
+  color:var(--ink);cursor:pointer;padding:.4em .6em;display:flex;align-items:baseline;gap:.35em;
+  border-radius:2px;transition:transform .1s;
+}
+.tab .tab-num{font-family:'Unbounded';font-weight:800;font-size:.75rem;color:var(--blue-deep)}
+.tab .tab-label{font-size:.95rem}
+.tab:hover{transform:translateY(-1px)}
+.tab[aria-selected="true"]{
+  background:var(--red);color:#fff;border-color:var(--ink);box-shadow:3px 3px 0 var(--ink);
+}
+.tab[aria-selected="true"] .tab-num{color:var(--caption)}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   6. ПАНЕЛИ РАЗДЕЛОВ
+═══════════════════════════════════════════════════════════════════════════ */
+main{position:relative;z-index:2}
+.panel{padding-block:clamp(2rem,6vw,4rem);animation:fadein .35s ease both}
+.panel[hidden]{display:none}
+@keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1}}
+
+/* — Главная / герой — */
+.hero-grid{display:grid;grid-template-columns:1fr;gap:1.5rem;align-items:start}
+.hero-name{
+  font-family:'Russo One';text-transform:uppercase;
+  font-size:clamp(3.2rem,17vw,7.5rem);letter-spacing:-.02em;line-height:.85;
+  color:var(--ink);text-shadow:5px 5px 0 var(--red),10px 10px 0 var(--blue);
+  margin:.3em 0 .1em;
+}
+.hero-lead{max-width:34ch;font-size:1.12rem;margin:.6rem 0 1.4rem}
+.age-wrap{position:relative;display:inline-flex;align-items:flex-end;gap:.4rem;margin:.3rem 0 1.5rem}
+.age-block{position:absolute;left:-.15em;bottom:.12em;width:1.15em;height:.62em;
+  background:var(--blue);z-index:0;transform:rotate(-3deg)}
+.age-num{position:relative;z-index:1;font-family:'Unbounded';font-weight:900;
+  font-size:clamp(4rem,20vw,8.5rem);line-height:.8;color:var(--red);
+  text-shadow:4px 4px 0 var(--ink)}
+.age-suffix{position:relative;z-index:1;font-family:'Russo One';text-transform:uppercase;
+  font-size:clamp(1.1rem,4vw,1.8rem);margin-bottom:.4em;color:var(--ink)}
+
+.hero-meta{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:1.4rem}
+.meta-chip{display:inline-flex;align-items:center;gap:.45em;background:var(--paper-warm);
+  border:3px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:.5em .8em;font-weight:600}
+.meta-chip b{font-family:'Russo One';font-weight:400;text-transform:uppercase;font-size:.95em}
+.meta-chip .ico{width:1.1em;height:1.1em;color:var(--red)}
+
+.hero-side{position:relative}
+.date-stamp{position:relative;width:150px;height:150px;display:grid;place-items:center;margin:0 auto}
+.date-stamp .burst{position:absolute;inset:0;
+  clip-path:polygon(50% 0,61% 20%,83% 12%,76% 34%,100% 40%,80% 52%,95% 72%,70% 68%,68% 92%,52% 74%,34% 96%,33% 70%,8% 78%,20% 55%,0 45%,22% 38%,10% 16%,35% 24%,42% 4%)}
+.date-stamp .burst.ink{background:var(--ink);transform:scale(1.06) rotate(-6deg)}
+.date-stamp .burst.fill{background:var(--caption)}
+.date-stamp .stamp-txt{position:relative;z-index:2;text-align:center;font-family:'Russo One';
+  text-transform:uppercase;color:var(--ink);line-height:.95}
+.date-stamp .stamp-day{font-size:2.2rem;display:block}
+.date-stamp .stamp-mon{font-size:1rem;letter-spacing:.05em}
+
+.vertical-date{writing-mode:vertical-rl;font-family:'Russo One';text-transform:uppercase;
+  letter-spacing:.15em;color:var(--blue-deep);margin-top:1rem;font-size:1rem}
+
+/* План вечера — таймлайн */
+.plan{margin-top:clamp(2rem,6vw,3.5rem)}
+.plan-list{list-style:none;margin:1.2rem 0 0;padding:0;display:grid;gap:.9rem}
+.plan-item{display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:start;
+  background:var(--paper);border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);
+  padding:.9rem 1.1rem;position:relative}
+.plan-item:nth-child(even){background:var(--paper-warm)}
+.plan-time{font-family:'Unbounded';font-weight:800;color:var(--red);font-size:1.05rem;
+  min-width:3.6em;line-height:1.1;padding-top:.1em}
+.plan-title{font-family:'Russo One';text-transform:uppercase;font-size:1.05rem;margin-bottom:.15rem}
+.plan-desc{color:var(--ink-soft);font-size:.98rem}
+
+/* — Как добраться — */
+.route-grid{display:grid;gap:1.4rem;grid-template-columns:1fr}
+.route-card{position:relative}
+.route-card h3{font-family:'Russo One';text-transform:uppercase;font-size:1.3rem;
+  display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem}
+.route-card .spider{width:38px;height:38px;flex:none}
+.route-card p{color:var(--ink-soft);margin:.3rem 0 1rem}
+.route-btns{display:flex;flex-direction:column;gap:.7rem}
+.addr-box{margin-top:1.4rem}
+.map-doodle{margin-top:1.4rem;border:4px solid var(--ink);box-shadow:var(--shadow-lg);
+  overflow:hidden;background:var(--paper-warm);position:relative}
+.map-doodle svg{display:block;width:100%;height:auto}
+.map-frame{margin-top:1.4rem;border:4px solid var(--ink);box-shadow:var(--shadow-lg);overflow:hidden}
+.map-frame iframe{display:block;width:100%;height:340px;border:0}
+.scrawl{font-family:'Neucha';color:var(--red-txt);font-size:1.15rem;display:inline-flex;
+  align-items:center;gap:.3rem;margin:.2rem 0 .6rem}
+.scrawl svg{width:1.4em;height:1.4em}
+
+/* — Галерея — */
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem}
+.shot{position:relative;border:4px solid var(--ink);box-shadow:5px 5px 0 var(--ink);
+  background:var(--paper-warm);cursor:pointer;aspect-ratio:1;overflow:hidden;padding:0;
+  transition:transform .15s;transform:rotate(var(--r,0deg))}
+.shot:hover,.shot:focus-visible{transform:rotate(0) scale(1.03);z-index:3}
+.shot img{width:100%;height:100%;object-fit:cover}
+.shot.empty{display:grid;place-items:center;text-align:center}
+.shot.empty .spider{width:46px;height:46px;opacity:.6}
+.shot.empty span{position:absolute;bottom:.5rem;left:0;right:0;font-family:'Neucha';
+  font-size:.95rem;color:var(--ink-soft)}
+.gallery-note{margin-top:1.4rem}
+
+/* Лайтбокс */
+dialog.lightbox{border:5px solid var(--ink);background:var(--paper);padding:0;max-width:min(92vw,900px);
+  box-shadow:12px 12px 0 rgba(0,0,0,.4)}
+dialog.lightbox::backdrop{background:rgba(20,17,15,.82)}
+.lb-stage{position:relative;background:var(--ink);min-height:200px;display:grid;place-items:center}
+.lb-stage img{max-width:100%;max-height:74vh;object-fit:contain}
+.lb-cap{padding:.7rem 1rem;font-family:'Neucha';font-size:1.1rem;text-align:center}
+.lb-btn{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;
+  display:grid;place-items:center;background:var(--caption);border:3px solid var(--ink);
+  cursor:pointer;font-family:'Russo One';font-size:1.4rem;color:var(--ink)}
+.lb-prev{left:.6rem}.lb-next{right:.6rem}
+.lb-close{position:absolute;top:.6rem;right:.6rem;width:44px;height:44px;background:var(--red);
+  color:#fff;border:3px solid var(--ink);cursor:pointer;font-size:1.3rem;z-index:4}
+.lb-spin{position:absolute;width:40px;height:40px;border:5px solid rgba(255,255,255,.3);
+  border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* — Музыка — */
+.music-panel{display:grid;gap:1.5rem;grid-template-columns:1fr;align-items:center}
+.music-big{position:relative}
+.music-big .note-mark{width:min(240px,60%);margin:0 auto 1rem;display:block}
+.music-cta{text-align:center}
+.music-cta .btn{font-size:1.15rem;padding:.9em 1.4em}
+.music-hint{font-family:'Neucha';color:var(--ink-soft);font-size:1.15rem;margin:.9rem 0 0;text-align:center}
+.music-plus{font-size:.9rem;color:var(--ink-soft);margin-top:.4rem;text-align:center}
+.music-frame{margin-top:1.6rem;border:4px solid var(--ink);box-shadow:var(--shadow-lg);overflow:hidden}
+.music-frame iframe{display:block;width:100%;height:180px;border:0}
+
+/* — Правила — */
+.rules-grid{display:grid;gap:1.2rem;grid-template-columns:1fr}
+.rule{position:relative;display:grid;grid-template-columns:auto 1fr;gap:1.1rem;align-items:start;
+  background:var(--paper);border:4px solid var(--ink);box-shadow:var(--shadow);padding:1.1rem 1.2rem}
+.rule:nth-child(3n){background:var(--paper-warm)}
+.rule-num{position:relative;width:58px;height:58px;flex:none;display:grid;place-items:center}
+.rule-num .web{position:absolute;inset:0;width:100%;height:100%;opacity:.5}
+.rule-num b{font-family:'Unbounded';font-weight:900;font-size:1.5rem;color:var(--red);z-index:1}
+.rule h3{font-family:'Russo One';text-transform:uppercase;font-size:1.15rem;margin-bottom:.25rem}
+.rule p{color:var(--ink-soft);margin:0}
+.rule.key{border-color:var(--red);box-shadow:6px 6px 0 var(--red-deep)}
+.rule.key .spider{position:absolute;right:.8rem;top:.8rem;width:40px;height:40px}
+
+/* — Рецепты — */
+.recipe-grid{display:grid;gap:1.4rem;grid-template-columns:1fr}
+.recipe{position:relative;background:var(--paper);border:4px solid var(--ink);
+  box-shadow:var(--shadow-lg);overflow:hidden;transform:rotate(var(--r,0deg))}
+.recipe-head{position:relative;padding:1rem 1.2rem;border-bottom:4px solid var(--ink)}
+.recipe-head h3{font-family:'Russo One';text-transform:uppercase;font-size:1.35rem;position:relative;z-index:2}
+.recipe-head .tag{position:relative;z-index:2;font-family:'Neucha';font-size:1.05rem;color:var(--ink-soft)}
+.recipe-body{padding:1rem 1.2rem 1.3rem}
+.recipe h4{font-family:'Golos Text';font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+  font-size:.78rem;color:var(--blue-deep);margin:.2rem 0 .5rem}
+.ing{list-style:none;margin:0 0 1rem;padding:0;display:grid;gap:.35rem}
+.ing li{position:relative;padding-left:1.5rem;color:var(--ink-soft)}
+.ing li::before{content:"";position:absolute;left:0;top:.55em;width:.7rem;height:.7rem;
+  background:var(--red);border:2px solid var(--ink);border-radius:50%}
+.steps{margin:0;padding-left:1.3rem;display:grid;gap:.35rem;color:var(--ink-soft)}
+.steps li{padding-left:.2rem}
+.recipe .nonalc{margin-top:1rem;font-size:.92rem;background:var(--paper-warm);
+  border:2px dashed var(--ink);padding:.5em .7em}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   7. СВИСАЮЩИЙ ПАУК, ШЁЛК-КУРСОР, ИНТРО, ПОДВАЛ
+═══════════════════════════════════════════════════════════════════════════ */
+.dangler{position:fixed;top:0;right:clamp(10px,2vw,40px);z-index:100;transform-origin:top center;pointer-events:none;
+  padding-top:env(safe-area-inset-top,0)}
+.dangler .thread{width:2px;height:96px;margin:0 auto;background:var(--ink)}
+.dangler .spider{width:46px;margin:-4px auto 0}
+
+canvas.silk{position:fixed;inset:0;z-index:60;pointer-events:none}
+
+.intro{position:fixed;inset:0;z-index:200;background:var(--red);
+  clip-path:circle(150% at 50% 40%);pointer-events:none;display:grid;place-items:center}
+.intro .spider{width:120px;height:120px}
+.intro .spider path{stroke:#fff}
+.intro .spider ellipse,.intro .spider circle:first-of-type{fill:#fff}
+.intro.play{animation:introOut .9s cubic-bezier(.7,0,.3,1) forwards}
+.intro.done{display:none}
+@keyframes introOut{to{clip-path:circle(0% at 50% 40%)}}
+
+.site-footer{border-top:4px solid var(--ink);margin-top:2rem;padding-block:1.5rem;
+  background:var(--paper-warm);position:relative;z-index:2}
+.site-footer .wrap{display:flex;align-items:center;gap:1rem;justify-content:space-between;flex-wrap:wrap}
+.site-footer p{margin:0;font-family:'Neucha';font-size:1.1rem;color:var(--ink-soft)}
+.site-footer .spider{width:40px;height:40px}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   8. АДАПТИВ
+═══════════════════════════════════════════════════════════════════════════ */
+/* На десктопе оставляем свободный угол справа под свисающего паука */
+@media (min-width:641px){
+  .header-inner{padding-right:clamp(56px,9vw,96px)}
+}
+@media (min-width:720px){
+  .hero-grid{grid-template-columns:1.6fr .8fr}
+  .route-grid{grid-template-columns:1fr 1fr}
+  .music-panel{grid-template-columns:1fr 1fr}
+  .recipe-grid{grid-template-columns:repeat(2,1fr)}
+  .rules-grid{grid-template-columns:1fr 1fr}
+  .rules-grid .rule.key{grid-column:1 / -1}
+}
+@media (min-width:1040px){
+  .recipe-grid{grid-template-columns:repeat(3,1fr)}
+}
+
+/* Мобильная навигация — фиксируем вкладки снизу */
+@media (max-width:640px){
+  .site-header{position:sticky;border-bottom:4px solid var(--ink)}
+  .header-inner{justify-content:center;padding:.5rem 0}
+  .tabs{
+    position:fixed;left:0;right:0;bottom:0;z-index:55;margin:0;
+    background:var(--paper);border-top:4px solid var(--ink);
+    display:grid;grid-template-columns:repeat(6,1fr);gap:0;
+    padding-bottom:env(safe-area-inset-bottom,0);
+  }
+  .tab{flex-direction:column;align-items:center;gap:.1em;padding:.5em .1em;border-width:0;
+    border-radius:0;border-right:2px solid rgba(20,17,15,.15)}
+  .tab:last-child{border-right:0}
+  .tab .tab-label{font-size:.62rem;line-height:1}
+  .tab .tab-num{font-size:.85rem;color:var(--blue-deep)}
+  .tab[aria-selected="true"]{box-shadow:none}
+  .tab[aria-selected="true"] .tab-num{color:var(--caption)}
+  main{padding-bottom:5rem}
+  .dangler{right:5vw}
+  .dangler .thread{height:52px}
+  .vertical-date{display:none}
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   9. ДВИЖЕНИЕ: анимации только при желании пользователя
+═══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion:no-preference){
+  .dangler{animation:swing 4.2s ease-in-out infinite}
+  @keyframes swing{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+
+  @supports (animation-timeline:view()){
+    .reveal{animation:reveal linear both;animation-timeline:view();animation-range:entry 2% cover 22%}
+    @keyframes reveal{from{opacity:0;transform:translateY(38px) rotate(-2deg) scale(.96)}to{opacity:1}}
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;
+    transition-duration:.001ms!important;scroll-behavior:auto!important}
+  .intro{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Интро-заставка (одна за сессию) -->
+<div class="intro" id="intro" aria-hidden="true">
+  <svg class="spider" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#14110F" stroke-width="4" stroke-linecap="round"><path d="M58 48 L80 40 L90 47"/><path d="M60 55 L83 55 L92 60"/><path d="M60 62 L82 67 L90 75"/><path d="M57 68 L74 79 L82 89"/><path d="M42 48 L20 40 L10 47"/><path d="M40 55 L17 55 L8 60"/><path d="M40 62 L18 67 L10 75"/><path d="M43 68 L26 79 L18 89"/></g><ellipse cx="50" cy="60" rx="15" ry="19" fill="#14110F" stroke="#14110F" stroke-width="3"/><circle cx="50" cy="38" r="10" fill="#14110F"/></svg>
+</div>
+
+<!-- Свисающий на паутинке паук -->
+<div class="dangler" aria-hidden="true">
+  <div class="thread"></div>
+  <div class="spider" id="dangler-spider"></div>
+</div>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <div class="brand">
+      <span class="spider" id="brand-spider" aria-hidden="true"></span>
+      <span class="brand-text">Приглашение<small class="hand" id="brand-sub">жду тебя</small></span>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Разделы сайта" id="tabs"></nav>
+  </div>
+</header>
+
+<main id="main" class="wrap"></main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p id="footer-note">До встречи — будет здорово 🕸</p>
+    <span class="spider" id="footer-spider" aria-hidden="true"></span>
+  </div>
+</footer>
+
+<noscript>
+  <div class="wrap" style="padding:2rem 0">
+    <p style="background:var(--caption);border:3px solid var(--ink);padding:1rem;font-weight:700">
+      Для полной версии приглашения включите JavaScript. Кратко: день рождения, дата и место —
+      смотри сообщение от меня, а тут будут план вечера, маршрут, музыка, правила и коктейли.
+    </p>
+  </div>
+</noscript>
+
+<script>
+/* ╔══════════════════════════════════════════════════════════════════════════╗
+   ║  ⬇⬇⬇  РЕДАКТИРУЙ ТОЛЬКО ЭТОТ БЛОК — здесь все данные приглашения  ⬇⬇⬇     ║
+   ║  Меняешь раз в год: имя, возраст, дату, адрес, ссылки, фото, правила...     ║
+   ╚══════════════════════════════════════════════════════════════════════════╝ */
+const CONFIG = {
+  /* ── КТО и КОГДА ─────────────────────────────────────────────────────── */
+  name:      "Коля",              // имя именинника (крупно на главной)
+  age:       "22",                // сколько лет исполняется
+  ageWord:   "года",              // "лет" / "год" / "года"
+  eyebrow:   "Ты приглашён",      // маленькая плашка над именем
+  invite:    "Как и каждый год — собираемся своей компанией в хорошем месте под Питером. Будет тепло, вкусно и по-домашнему шумно. Очень жду именно тебя.",
+  dateDay:   "01",                // число (для штампа)
+  dateMonth: "авг",               // месяц кратко (для штампа)
+  dateFull:  "1 августа",         // дата словами
+  weekday:   "суббота",
+  time:      "12:00",
+  place:     "пос. Мга",          // короткое название места
+  address:   "Ленинградская область, Кировский район, городской посёлок Мга, Водопроводный переулок, 11А", // ПОЛНЫЙ адрес — по нему строятся ссылки на карты
+  coords:    "59.7499945,31.0500004", // широта,долгота — для маршрута в один тап
+  station:   "станция Мга",       // ближайшая ж/д станция
+
+  /* ── ПЛАН ВЕЧЕРА ─────────────────────────────────────────────────────── */
+  plan: [
+    { time:"12:00", title:"Сбор гостей",     desc:"Подтягиваемся, обнимаемся, занимаем места." },
+    { time:"13:00", title:"За стол",         desc:"Первый тост, горячее и поздравления." },
+    { time:"15:00", title:"Игры и воздух",   desc:"Двигаемся, играем, гуляем по округе." },
+    { time:"18:00", title:"Ужин и коктейли", desc:"Второй заход к столу, музыка и напитки." },
+    { time:"вечер", title:"Разъезд",         desc:"Догуливаем и вечером спокойно разъезжаемся (см. «Правила»)." },
+  ],
+
+  /* ── ССЫЛКИ ──────────────────────────────────────────────────────────── */
+  trainUrl:  "https://rasp.yandex.ru/suburban/sankt-peterburg-ladozhskiy--mga-station/today", // расписание электричек: Ладожский → Мга
+  playlist:  "",                          // ⚠️ ВСТАВЬ ссылку на общий плейлист Яндекс.Музыки (с доступом на добавление)
+  playlistEmbed:"",                       // (по желанию) src iframe-плеера плейлиста
+  mapEmbed:  "",                          // (по желанию) src iframe Яндекс.Карт: Поделиться → Вставить код → скопировать src
+
+  /* ── ФОТО ПРОШЛЫХ ЛЕТ ────────────────────────────────────────────────── */
+  // Положи файлы рядом с index.html (например в папку images/) и впиши сюда.
+  // Пока список пустой — покажутся красивые рамки-заглушки.
+  photos: [
+    { src:"images/01-thumb.jpg", full:"images/01.jpg", alt:"Кадр с прошлых праздников — 1" },
+    { src:"images/02-thumb.jpg", full:"images/02.jpg", alt:"Кадр с прошлых праздников — 2" },
+    { src:"images/03-thumb.jpg", full:"images/03.jpg", alt:"Кадр с прошлых праздников — 3" },
+    { src:"images/04-thumb.jpg", full:"images/04.jpg", alt:"Кадр с прошлых праздников — 4" },
+    { src:"images/05-thumb.jpg", full:"images/05.jpg", alt:"Кадр с прошлых праздников — 5" },
+    { src:"images/06-thumb.jpg", full:"images/06.jpg", alt:"Кадр с прошлых праздников — 6" },
+    { src:"images/07-thumb.jpg", full:"images/07.jpg", alt:"Кадр с прошлых праздников — 7" },
+    { src:"images/08-thumb.jpg", full:"images/08.jpg", alt:"Кадр с прошлых праздников — 8" },
+    { src:"images/09-thumb.jpg", full:"images/09.jpg", alt:"Кадр с прошлых праздников — 9" },
+    { src:"images/10-thumb.jpg", full:"images/10.jpg", alt:"Кадр с прошлых праздников — 10" },
+    { src:"images/11-thumb.jpg", full:"images/11.jpg", alt:"Кадр с прошлых праздников — 11" },
+    { src:"images/12-thumb.jpg", full:"images/12.jpg", alt:"Кадр с прошлых праздников — 12" },
+    { src:"images/13-thumb.jpg", full:"images/13.jpg", alt:"Кадр с прошлых праздников — 13" },
+    { src:"images/14-thumb.jpg", full:"images/14.jpg", alt:"Кадр с прошлых праздников — 14" },
+    { src:"images/15-thumb.jpg", full:"images/15.jpg", alt:"Кадр с прошлых праздников — 15" },
+    { src:"images/16-thumb.jpg", full:"images/16.jpg", alt:"Кадр с прошлых праздников — 16" },
+    { src:"images/17-thumb.jpg", full:"images/17.jpg", alt:"Кадр с прошлых праздников — 17" },
+    { src:"images/18-thumb.jpg", full:"images/18.jpg", alt:"Кадр с прошлых праздников — 18" },
+    { src:"images/19-thumb.jpg", full:"images/19.jpg", alt:"Кадр с прошлых праздников — 19" },
+  ],
+
+  /* ── ПРАВИЛА ─────────────────────────────────────────────────────────── */
+  rules: [
+    { title:"Уезжаем вечером", text:"Никто не остаётся на ночь и до утра тоже — вечером все разъезжаются. Заранее гляньте обратную дорогу." },
+    { title:"Алкоголь — каждый себе", text:"Каждый покупает алкоголь сам. Исключение — пиво: берём из расчёта две баночки на человека." },
+    { title:"Музыка — общая", text:"Кидай свои треки в общий плейлист (раздел «Музыка») — соберём саундтрек вечера вместе. Что купить под коктейли — в разделе «Рецепты»." },
+    { title:"Главное правило", text:"Приходи в хорошем настроении. Остальное приложится.", key:true },
+  ],
+
+  /* ── КОКТЕЙЛИ ────────────────────────────────────────────────────────── */
+  recipes: [
+    { name:"Голубая лагуна", tag:"яркая и освежающая",
+      ing:["Водка — 40 мл","Блю кюрасао — 20 мл","Спрайт или лимонад — 120 мл","Лёд"],
+      steps:["Наполни бокал льдом.","Влей водку и блю кюрасао.","Долей лимонадом и перемешай — цвет станет ярко-голубым."],
+      nonalc:"Без алкоголя: голубой сироп + спрайт." },
+    { name:"Беллини", tag:"лёгкий и праздничный",
+      ing:["Просекко — 100 мл","Персиковое пюре или нектар — 50 мл"],
+      steps:["Охлади просекко заранее.","Влей персиковое пюре в бокал.","Аккуратно долей просекко и мягко перемешай."],
+      nonalc:"Без алкоголя: персиковый сок + газировка." },
+    { name:"Ром с вишнёвым соком", tag:"проще некуда",
+      ing:["Ром (белый или тёмный) — 50 мл","Вишнёвый сок — 120 мл","Лёд","Лайм — по желанию"],
+      steps:["Наполни бокал льдом.","Влей ром.","Долей вишнёвым соком и перемешай."],
+      nonalc:"Без алкоголя: вишнёвый сок с газировкой и льдом." },
+    { name:"Белый русский", tag:"мягкий, «десертный»",
+      ing:["Водка — 50 мл","Кофейный ликёр (Калуа) — 20 мл","Сливки — 30 мл","Лёд"],
+      steps:["Лёд в бокал, влей водку и кофейный ликёр.","Сверху аккуратно влей сливки.","Перемешай перед тем, как пить."],
+      nonalc:"Без алкоголя: холодный кофе с молоком и сиропом." },
+    { name:"Отвёртка", tag:"классика с апельсином",
+      ing:["Водка — 50 мл","Апельсиновый сок — 150 мл","Лёд"],
+      steps:["Наполни бокал льдом.","Влей водку.","Долей апельсиновым соком и перемешай."],
+      nonalc:"Без алкоголя: просто апельсиновый сок со льдом." },
+  ],
+};
+/* ╔══════════════════════════════════════════════════════════════════════════╗
+   ║  ⬆⬆⬆  КОНЕЦ РЕДАКТИРУЕМОГО БЛОКА. Ниже — код, трогать не нужно.  ⬆⬆⬆       ║
+   ╚══════════════════════════════════════════════════════════════════════════╝ */
+
+/* ── Утилиты ─────────────────────────────────────────────────────────────── */
+const $ = (s,el=document)=>el.querySelector(s);
+const esc = (s)=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const enc = encodeURIComponent;
+
+/* Паучок (SVG-строка). red=true — красное брюшко с песочными часами. */
+function spider(red){
+  const body = red ? '#E8262C' : '#14110F';
+  return `<svg class="spider" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+    <g fill="none" stroke="#14110F" stroke-width="4" stroke-linecap="round">
+      <path d="M58 48 L80 40 L90 47"/><path d="M60 55 L83 55 L92 60"/>
+      <path d="M60 62 L82 67 L90 75"/><path d="M57 68 L74 79 L82 89"/>
+      <path d="M42 48 L20 40 L10 47"/><path d="M40 55 L17 55 L8 60"/>
+      <path d="M40 62 L18 67 L10 75"/><path d="M43 68 L26 79 L18 89"/>
+    </g>
+    <ellipse cx="50" cy="60" rx="15" ry="19" fill="${body}" stroke="#14110F" stroke-width="3"/>
+    <circle cx="50" cy="38" r="10" fill="#14110F"/>
+    <circle cx="46" cy="37" r="2.2" fill="#F6EFDD"/><circle cx="54" cy="37" r="2.2" fill="#F6EFDD"/>
+    ${red?'<path d="M44 53 L56 53 L44 67 L56 67 Z" fill="#14110F" opacity=".9"/>':''}
+  </svg>`;
+}
+/* Паутина в углу */
+function web(pos){
+  return `<svg class="web web--${pos}" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+    <g fill="none" stroke="#14110F" stroke-width="2" stroke-linecap="round">
+      <path d="M0 0 L100 12"/><path d="M0 0 L84 44"/><path d="M0 0 L60 66"/><path d="M0 0 L38 88"/><path d="M0 0 L12 100"/>
+      <path d="M30 4 Q10 10 4 30"/><path d="M58 8 Q18 18 8 58"/><path d="M92 14 Q30 30 14 92"/>
+    </g></svg>`;
+}
+const icoPin  = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg>';
+const icoTime = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+const icoCal  = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>';
+const icoArrow= '<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12c8 6 20 8 34 2"/><path d="M28 6l8 8-9 3"/></svg>';
+
+/* ── Ссылки на карты ─────────────────────────────────────────────────────── */
+function mapLinks(){
+  const c=(CONFIG.coords||'').trim();
+  const q=enc(CONFIG.address||CONFIG.place||'');
+  if(c){
+    const [lat,lon]=c.split(',').map(s=>s.trim());
+    return {
+      yaAuto:`https://yandex.ru/maps/?rtext=~${lat},${lon}&rtt=auto`,
+      yaTransit:`https://yandex.ru/maps/?rtext=~${lat},${lon}&rtt=mt`,
+      google:`https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`,
+      twogis:`https://2gis.ru/directions/points/%7C${lon}%2C${lat}`,
+    };
+  }
+  return {
+    yaAuto:`https://yandex.ru/maps/?text=${q}&rtt=auto`,
+    yaTransit:`https://yandex.ru/maps/?text=${q}&rtt=mt`,
+    google:`https://www.google.com/maps/search/?api=1&query=${q}`,
+    twogis:`https://2gis.ru/search/${q}`,
+  };
+}
+
+/* ── Разделы ─────────────────────────────────────────────────────────────── */
+const SECTIONS=[
+  {id:'home',   n:'01', label:'Главная',       short:'Главная'},
+  {id:'route',  n:'02', label:'Как добраться', short:'Дорога'},
+  {id:'gallery',n:'03', label:'Галерея',       short:'Фото'},
+  {id:'music',  n:'04', label:'Музыка',        short:'Музыка'},
+  {id:'rules',  n:'05', label:'Правила',       short:'Правила'},
+  {id:'recipes',n:'06', label:'Рецепты',       short:'Рецепты'},
+];
+
+function secHead(n,title,sub){
+  return `<div class="sec-head reveal"><span class="sec-num">${n}</span>
+    <h2 class="sec-title">${esc(title)}</h2>${sub?`<p class="sec-sub">${sub}</p>`:''}</div>`;
+}
+
+/* ── Рендер: Главная ─────────────────────────────────────────────────────── */
+function renderHome(){
+  const plan=CONFIG.plan.map(p=>`<li class="plan-item reveal">
+      <span class="plan-time">${esc(p.time)}</span>
+      <span><span class="plan-title">${esc(p.title)}</span><br><span class="plan-desc">${esc(p.desc)}</span></span>
+    </li>`).join('');
+  return `
+  <span class="eyebrow reveal">${esc(CONFIG.eyebrow)}</span>
+  <div class="hero-grid">
+    <div class="hero-main">
+      <h1 class="hero-name">${esc(CONFIG.name)}</h1>
+      <div class="age-wrap"><span class="age-block" aria-hidden="true"></span>
+        <span class="age-num">${esc(CONFIG.age)}</span>
+        <span class="age-suffix">${esc(CONFIG.ageWord)}</span>
+        ${spider(true)}
+      </div>
+      <p class="hero-lead">${esc(CONFIG.invite)}</p>
+      <div class="hero-meta">
+        <span class="meta-chip">${icoCal}<b>${esc(CONFIG.dateFull)}</b></span>
+        <span class="meta-chip">${icoTime}<b>${esc(CONFIG.time)}</b></span>
+        <span class="meta-chip">${icoPin}<b>${esc(CONFIG.place)}</b></span>
+      </div>
+      <button class="btn btn--red" type="button" data-go="route">Как добраться ${icoArrow.replace('class="ico"','')}</button>
+    </div>
+    <div class="hero-side reveal">
+      <div class="date-stamp">
+        <span class="burst ink" aria-hidden="true"></span>
+        <span class="burst fill" aria-hidden="true"></span>
+        <span class="stamp-txt"><span class="stamp-day">${esc(CONFIG.dateDay)}</span><span class="stamp-mon">${esc(CONFIG.dateMonth)}</span></span>
+      </div>
+      <div style="text-align:center"><span class="vertical-date">${esc(CONFIG.weekday)} · ${esc(CONFIG.time)}</span></div>
+    </div>
+  </div>
+  <div class="plan panel-card warm hf hf-fade">
+    ${web('tr')}
+    <div class="caption-box">План вечера</div>
+    <ul class="plan-list">${plan}</ul>
+  </div>`;
+}
+
+/* ── Рендер: Как добраться ───────────────────────────────────────────────── */
+function renderRoute(){
+  const m=mapLinks();
+  const frame = CONFIG.mapEmbed
+    ? `<div class="map-frame reveal"><iframe src="${esc(CONFIG.mapEmbed)}" title="Карта — как добраться" loading="lazy" allowfullscreen></iframe></div>`
+    : `<div class="map-doodle reveal hf hf-b hf-fade" aria-hidden="true">
+        <svg viewBox="0 0 600 240"><g fill="none" stroke="#14110F" stroke-width="4" stroke-linecap="round">
+          <path d="M0 170 C120 140 180 200 300 160 S520 120 600 150"/>
+          <path d="M60 0 C80 90 40 150 90 240" stroke-width="3"/>
+          <path d="M300 0 L300 160" stroke-width="3" stroke-dasharray="10 12"/>
+          <path d="M420 40 C440 110 400 170 470 240" stroke-width="3"/></g>
+          <g><path d="M300 120 c-26 0 -46 20 -46 46 c0 30 46 74 46 74 c0 0 46 -44 46 -74 c0 -26 -20 -46 -46 -46 Z" fill="#E8262C" stroke="#14110F" stroke-width="4"/>
+          <circle cx="300" cy="166" r="16" fill="#F6EFDD" stroke="#14110F" stroke-width="4"/></g></svg>
+      </div>`;
+  return `
+    <div class="route-grid">
+      <div class="route-card panel-card reveal">
+        ${web('br')}
+        <h3>${spider(false)}На машине или каршеринге</h3>
+        <p>Часть ребят будет на своих машинах. Можно и на каршеринге — например, до ж/д станции Мга, а оттуда пара минут до места.</p>
+        <div class="route-btns">
+          <a class="btn btn--red" href="${m.yaAuto}" target="_blank" rel="noopener">Маршрут в Яндекс.Картах</a>
+          <a class="btn" href="${m.google}" target="_blank" rel="noopener">Google Карты</a>
+          <a class="btn" href="${m.twogis}" target="_blank" rel="noopener">2ГИС</a>
+        </div>
+      </div>
+      <div class="route-card panel-card warm reveal">
+        ${web('br')}
+        <h3>${spider(true)}На электричке</h3>
+        <p>С Ладожского вокзала до «${esc(CONFIG.station)}», дальше совсем близко. Вариант для самых экономных — и вполне удобный.</p>
+        <span class="scrawl">сначала глянь расписание ${icoArrow}</span>
+        <div class="route-btns">
+          <a class="btn btn--blue" href="${esc(CONFIG.trainUrl)}" target="_blank" rel="noopener">Расписание электричек</a>
+          <a class="btn" href="${m.yaTransit}" target="_blank" rel="noopener">Маршрут на транспорте</a>
+        </div>
+      </div>
+    </div>
+    <div class="addr-box caption-box reveal">${icoPin.replace('class="ico"','width="18" height="18" style="vertical-align:-3px"')} ${esc(CONFIG.address)}</div>
+    ${frame}`;
+}
+
+/* ── Рендер: Галерея ─────────────────────────────────────────────────────── */
+function renderGallery(){
+  const rots=['-2.2deg','1.6deg','-1deg','2.4deg','-1.8deg','1.2deg'];
+  let shots;
+  if(CONFIG.photos && CONFIG.photos.length){
+    shots=CONFIG.photos.map((p,i)=>`<button class="shot reveal" type="button" data-i="${i}" style="--r:${rots[i%rots.length]}" aria-label="Открыть фото: ${esc(p.alt||'фото')}">
+      <img src="${esc(p.src)}" alt="${esc(p.alt||'')}" loading="lazy" decoding="async"></button>`).join('');
+  }else{
+    shots=Array.from({length:6}).map((_,i)=>`<div class="shot empty reveal hf ${i%2?'hf-b':''}" style="--r:${rots[i%rots.length]}" aria-hidden="true">
+      ${spider(i%3===0)}<span>фото скоро</span></div>`).join('');
+  }
+  const note = (CONFIG.photos && CONFIG.photos.length)
+    ? 'Кадры прошлых лет. Нажми на любой — откроется крупно.'
+    : 'Скоро добавлю сюда фотографии с прошлых праздников.';
+  return `<div class="gallery-grid">${shots}</div>
+    <div class="gallery-note caption-box reveal">${esc(note)}</div>`;
+}
+
+/* ── Рендер: Музыка ──────────────────────────────────────────────────────── */
+function renderMusic(){
+  const noteMark = `<svg class="note-mark" viewBox="0 0 200 160" aria-hidden="true">
+    <g fill="none" stroke="#14110F" stroke-width="4" stroke-linecap="round">
+      <path d="M20 120 Q60 60 120 70 Q160 76 178 40"/>
+    </g>
+    <g fill="#E8262C" stroke="#14110F" stroke-width="4">
+      <circle cx="24" cy="126" r="16"/><circle cx="120" cy="90" r="14"/></g>
+    <g fill="none" stroke="#14110F" stroke-width="4"><path d="M39 122 L39 60"/><path d="M133 88 L133 34"/></g>
+    <g fill="#1B57B0"><circle cx="70" cy="52" r="5"/><circle cx="150" cy="48" r="5"/><circle cx="100" cy="120" r="5"/></g>
+  </svg>`;
+  const cta = CONFIG.playlist
+    ? `<a class="btn btn--red" href="${esc(CONFIG.playlist)}" target="_blank" rel="noopener">Добавить трек в общий плейлист</a>`
+    : `<button class="btn" type="button" disabled title="Ссылка появится позже">Ссылка на плейлист скоро</button>`;
+  const embed = CONFIG.playlistEmbed
+    ? `<div class="music-frame reveal"><iframe src="${esc(CONFIG.playlistEmbed)}" title="Плейлист вечеринки" loading="lazy" allow="encrypted-media"></iframe></div>`
+    : '';
+  return `
+    <div class="music-panel panel-card reveal">
+      ${web('tl')}
+      <div class="music-big">${noteMark}</div>
+      <div class="music-cta">
+        <p style="font-family:'Russo One';text-transform:uppercase;font-size:1.4rem;margin:0 0 1rem">Собираем плейлист вместе</p>
+        ${cta}
+        <p class="music-hint">кидай любимые треки — соберём саундтрек вечера</p>
+        <p class="music-plus">Чтобы добавлять треки, нужен Яндекс Плюс.</p>
+      </div>
+    </div>
+    ${embed}`;
+}
+
+/* ── Рендер: Правила ─────────────────────────────────────────────────────── */
+function renderRules(){
+  const items=CONFIG.rules.map((r,i)=>`<div class="rule reveal ${r.key?'key':''}">
+      <span class="rule-num">${web('tl')}<b>${String(i+1).padStart(2,'0')}</b></span>
+      <div><h3>${esc(r.title)}</h3><p>${esc(r.text)}</p></div>
+      ${r.key?spider(true):''}
+    </div>`).join('');
+  return `<div class="rules-grid">${items}</div>`;
+}
+
+/* ── Рендер: Рецепты ─────────────────────────────────────────────────────── */
+function renderRecipes(){
+  const rots=['-1.5deg','1deg','-.8deg','1.4deg','-1.2deg','.9deg'];
+  const cards=CONFIG.recipes.map((r,i)=>`<article class="recipe reveal" style="--r:${rots[i%rots.length]}">
+      <div class="recipe-head hf ${i%2?'hf-b':''} hf-fade">
+        ${web('tr')}
+        <h3>${esc(r.name)}</h3>${r.tag?`<span class="tag">${esc(r.tag)}</span>`:''}
+      </div>
+      <div class="recipe-body">
+        <h4>Ингредиенты</h4>
+        <ul class="ing">${r.ing.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
+        <h4>Как сделать</h4>
+        <ol class="steps">${r.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
+        ${r.nonalc?`<p class="nonalc">${esc(r.nonalc)}</p>`:''}
+      </div>
+    </article>`).join('');
+  return `<p class="sec-sub reveal" style="margin-bottom:1.4rem">Каждый берёт напитки себе — вот простые коктейли и что для них купить. Почти у всех есть безалкогольный вариант.</p>
+    <div class="recipe-grid">${cards}</div>`;
+}
+
+const RENDER={home:renderHome,route:renderRoute,gallery:renderGallery,music:renderMusic,rules:renderRules,recipes:renderRecipes};
+
+/* ── Сборка страницы ─────────────────────────────────────────────────────── */
+const motionOK = matchMedia('(prefers-reduced-motion: no-preference)').matches;
+
+function build(){
+  // паучки в статичных местах
+  $('#brand-spider').innerHTML=spider(false);
+  $('#dangler-spider').innerHTML=spider(true);
+  $('#footer-spider').innerHTML=spider(false);
+  $('#brand-sub').textContent = 'жду тебя';
+  $('#footer-note').textContent = 'До встречи — будет здорово';
+
+  // вкладки
+  const tabs=$('#tabs');
+  tabs.innerHTML=SECTIONS.map((s,i)=>`<button class="tab" role="tab" id="tab-${s.id}"
+    aria-controls="panel-${s.id}" aria-selected="${i===0}" tabindex="${i===0?0:-1}" data-id="${s.id}">
+    <span class="tab-num">${s.n}</span><span class="tab-label">${s.short}</span></button>`).join('');
+
+  // панели
+  const main=$('#main');
+  main.innerHTML=SECTIONS.map(s=>{
+    const head = s.id==='home' ? '' : secHead(s.n,s.label);
+    return `<section class="panel" id="panel-${s.id}" role="tabpanel" aria-labelledby="tab-${s.id}" tabindex="0" ${s.id==='home'?'':'hidden'}>
+      ${head}<div class="panel-inner">${RENDER[s.id]()}</div></section>`;
+  }).join('');
+
+  wireTabs();
+  wireGallery();
+  wireHeroButton();
+}
+
+/* Переключение вкладок */
+function showSection(id){
+  const run=()=>{
+    SECTIONS.forEach(s=>{
+      const on=s.id===id;
+      const p=$('#panel-'+s.id), t=$('#tab-'+s.id);
+      if(p) p.hidden=!on;
+      if(t){t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;}
+    });
+    window.scrollTo({top:0,behavior:'auto'});
+  };
+  if(motionOK && document.startViewTransition){ document.startViewTransition(run); } else run();
+  try{ history.replaceState(null,'','#'+id); }catch(e){}
+}
+
+function wireTabs(){
+  const tabs=[...document.querySelectorAll('.tab')];
+  tabs.forEach(t=>{
+    t.addEventListener('click',()=>showSection(t.dataset.id));
+    t.addEventListener('keydown',e=>{
+      const i=tabs.indexOf(t);let j=null;
+      if(e.key==='ArrowRight'||e.key==='ArrowDown')j=(i+1)%tabs.length;
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp')j=(i-1+tabs.length)%tabs.length;
+      else if(e.key==='Home')j=0; else if(e.key==='End')j=tabs.length-1;
+      if(j!==null){e.preventDefault();tabs[j].focus();showSection(tabs[j].dataset.id);}
+    });
+  });
+  // стартовый раздел из hash
+  const hash=(location.hash||'').replace('#','');
+  if(SECTIONS.some(s=>s.id===hash)) showSection(hash);
+}
+
+function wireHeroButton(){
+  document.querySelectorAll('[data-go]').forEach(b=>{
+    b.addEventListener('click',()=>{const id=b.dataset.go;showSection(id);const t=$('#tab-'+id);if(t)t.focus();});
+  });
+}
+
+/* ── Лайтбокс галереи ────────────────────────────────────────────────────── */
+let lb, lbImg, lbCap, lbSpin, lbIndex=0, lbOpener=null;
+function wireGallery(){
+  const shots=[...document.querySelectorAll('.shot[data-i]')];
+  if(!shots.length) return;
+  if(!lb){
+    lb=document.createElement('dialog');lb.className='lightbox';
+    lb.innerHTML=`<button class="lb-close" aria-label="Закрыть">✕</button>
+      <div class="lb-stage"><button class="lb-btn lb-prev" aria-label="Предыдущее фото">‹</button>
+      <span class="lb-spin" hidden></span><img alt=""><button class="lb-btn lb-next" aria-label="Следующее фото">›</button></div>
+      <p class="lb-cap"></p>`;
+    document.body.appendChild(lb);
+    lbImg=$('img',lb);lbCap=$('.lb-cap',lb);lbSpin=$('.lb-spin',lb);
+    $('.lb-close',lb).addEventListener('click',()=>lb.close());
+    $('.lb-prev',lb).addEventListener('click',()=>step(-1));
+    $('.lb-next',lb).addEventListener('click',()=>step(1));
+    lb.addEventListener('click',e=>{if(e.target===lb)lb.close();});
+    lb.addEventListener('close',()=>{if(lbOpener)lbOpener.focus();});
+    lb.addEventListener('keydown',e=>{
+      if(e.key==='ArrowLeft')step(-1);else if(e.key==='ArrowRight')step(1);
+    });
+    // свайпы
+    let x0=null;
+    lb.addEventListener('touchstart',e=>{x0=e.changedTouches[0].clientX;},{passive:true});
+    lb.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;
+      if(Math.abs(dx)>40)step(dx<0?1:-1);x0=null;},{passive:true});
+  }
+  shots.forEach(s=>s.addEventListener('click',()=>{lbOpener=s;openLb(+s.dataset.i);}));
+}
+function openLb(i){lbIndex=i;loadLb();if(!lb.open)lb.showModal();}
+function loadLb(){
+  const p=CONFIG.photos[lbIndex];if(!p)return;
+  const big=p.full||p.src;
+  lbSpin.hidden=false;lbImg.style.opacity='.2';lbCap.textContent=p.alt||'';
+  const img=new Image();
+  img.onload=()=>{lbImg.src=big;lbImg.alt=p.alt||'';lbImg.style.opacity='1';lbSpin.hidden=true;};
+  img.onerror=()=>{lbSpin.hidden=true;lbImg.style.opacity='1';lbCap.textContent='Не удалось загрузить фото';};
+  img.src=big;
+}
+function step(d){lbIndex=(lbIndex+d+CONFIG.photos.length)%CONFIG.photos.length;loadLb();}
+
+/* ── Свисающий паук: лёгкий рывок при скролле ────────────────────────────── */
+function wireDangler(){
+  if(!motionOK) return;
+  const d=$('.dangler');if(!d)return;
+  let t=null;
+  addEventListener('scroll',()=>{
+    d.style.transition='transform .3s ease';d.style.transform='translateY(6px)';
+    clearTimeout(t);t=setTimeout(()=>{d.style.transform='';d.style.transition='';},200);
+  },{passive:true});
+}
+
+/* ── Шёлковый след за курсором ───────────────────────────────────────────── */
+function wireSilk(){
+  if(!motionOK || !matchMedia('(pointer:fine)').matches) return;
+  const cv=document.createElement('canvas');cv.className='silk';document.body.appendChild(cv);
+  const ctx=cv.getContext('2d');let dpr=Math.min(devicePixelRatio||1,2);
+  function size(){cv.width=innerWidth*dpr;cv.height=innerHeight*dpr;cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px';ctx.setTransform(dpr,0,0,dpr,0,0);}
+  size();addEventListener('resize',size);
+  const N=14,pts=Array.from({length:N},()=>({x:innerWidth/2,y:innerHeight/2}));
+  let tx=innerWidth/2,ty=innerHeight/2,active=false,idle=0;
+  addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;tx=e.clientX;ty=e.clientY;idle=0;if(!active){active=true;loop();}},{passive:true});
+  function loop(){
+    pts[0].x+=(tx-pts[0].x)*.35;pts[0].y+=(ty-pts[0].y)*.35;
+    for(let i=1;i<N;i++){pts[i].x+=(pts[i-1].x-pts[i].x)*.35;pts[i].y+=(pts[i-1].y-pts[i].y)*.35;}
+    ctx.clearRect(0,0,innerWidth,innerHeight);
+    ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
+    for(let i=1;i<N;i++)ctx.lineTo(pts[i].x,pts[i].y);
+    ctx.lineCap='round';ctx.strokeStyle='rgba(20,17,15,.28)';ctx.lineWidth=3;ctx.stroke();
+    ctx.strokeStyle='rgba(255,255,255,.8)';ctx.lineWidth=1.4;ctx.stroke();
+    idle++;
+    const moving=Math.abs(tx-pts[N-1].x)+Math.abs(ty-pts[N-1].y)>.6;
+    if(moving||idle<50){requestAnimationFrame(loop);}
+    else{ctx.clearRect(0,0,innerWidth,innerHeight);active=false;}
+  }
+}
+
+/* ── Интро-заставка (одна за сессию) ─────────────────────────────────────── */
+function wireIntro(){
+  const intro=$('#intro');if(!intro)return;
+  let seen=false;try{seen=sessionStorage.getItem('introSeen');}catch(e){}
+  if(!motionOK||seen){intro.classList.add('done');return;}
+  requestAnimationFrame(()=>intro.classList.add('play'));
+  intro.addEventListener('animationend',()=>intro.classList.add('done'));
+  try{sessionStorage.setItem('introSeen','1');}catch(e){}
+  setTimeout(()=>intro.classList.add('done'),1600); // страховка
+}
+
+/* ── Старт ───────────────────────────────────────────────────────────────── */
+document.title=`${CONFIG.name} · День рождения`;
+build();
+wireIntro();
+wireDangler();
+wireSilk();
+</script>
+</body>
+</html>
