@@ -121,6 +121,12 @@ h1,h2,h3{margin:0;line-height:1;font-weight:400}
 }
 .hf-b{background-image:radial-gradient(var(--halftone-b) 22%,transparent 23%)}
 .hf-fade{-webkit-mask-image:linear-gradient(135deg,#000,transparent 72%);mask-image:linear-gradient(135deg,#000,transparent 72%)}
+/* Мягкий растр: точки тают в угол через ФОН (не маскирует содержимое — кнопки и текст видны) */
+.hf-soft{background-color:var(--paper);
+  background-image:linear-gradient(135deg,transparent 18%,var(--paper) 82%),radial-gradient(var(--halftone) 22%,transparent 23%);
+  background-size:cover,11px 11px}
+.hf-soft.hs-warm{background-color:var(--paper-warm);
+  background-image:linear-gradient(135deg,transparent 18%,var(--paper-warm) 82%),radial-gradient(var(--halftone-b) 22%,transparent 23%)}
 
 /* Паутина в углу */
 .web{position:absolute;width:88px;height:88px;opacity:.42;pointer-events:none;z-index:2}
@@ -689,7 +695,7 @@ function renderHome(){
       <div style="text-align:center"><span class="vertical-date">${esc(CONFIG.weekday)} · ${esc(CONFIG.time)}</span></div>
     </div>
   </div>
-  <div class="plan panel-card warm hf hf-fade">
+  <div class="plan panel-card hf-soft hs-warm">
     ${web('tr')}
     <div class="caption-box">Программа</div>
     <p class="plan-gather">${esc(CONFIG.gather)}</p>
@@ -717,7 +723,7 @@ function renderRoute(){
       <span><b>Важно про электрички</b>Из-за строительства ВСМ-1 поезда с Московского вокзала <strong>не ходят</strong>. Садиться только на <strong>Ладожском вокзале</strong> или в <strong>Рыбацком</strong>.</span>
     </div>
     <div class="route-grid">
-      <div class="route-card panel-card hf hf-fade reveal">
+      <div class="route-card panel-card hf-soft reveal">
         ${web('br')}
         <h3>${spider('blue')}На машине или каршеринге</h3>
         <p>Часть ребят будет на своих машинах. Можно и на каршеринге — например, до ж/д станции Мга, а оттуда пара минут до места.</p>
@@ -727,7 +733,7 @@ function renderRoute(){
           <a class="btn" href="${m.twogis}" target="_blank" rel="noopener">2ГИС</a>
         </div>
       </div>
-      <div class="route-card panel-card warm hf-b hf hf-fade reveal">
+      <div class="route-card panel-card hf-soft hs-warm reveal">
         ${web('br')}
         <h3>${spider('red')}На электричке</h3>
         <p>Только с <b>Ладожского</b> вокзала или из <b>Рыбацкого</b> (с Московского сейчас нельзя — см. пометку выше) до «${esc(CONFIG.station)}», дальше совсем близко.</p>
