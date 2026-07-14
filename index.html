@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#E8262C" />
 <title>Приглашение · День рождения</title>
-<meta name="description" content="Приглашение на день рождения: план вечера, как добраться, музыка, правила и коктейли." />
+<meta name="description" content="Приглашение на день рождения: программа, как добраться, фото, важные пометки и коктейли." />
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
      Шрифты: Russo One (заголовки), Unbounded (крупные цифры),
@@ -58,6 +58,15 @@ body::before{
   content:"";position:fixed;inset:0;z-index:1;pointer-events:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   opacity:.09;mix-blend-mode:multiply;
+}
+/* Цветные «блики» — красный и синий фон по углам страницы */
+body::after{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(60vw 60vw at -8% -8%, rgba(27,87,176,.20), transparent 62%),
+    radial-gradient(58vw 58vw at 108% 112%, rgba(232,38,44,.18), transparent 62%),
+    radial-gradient(42vw 42vw at 112% -6%, rgba(232,38,44,.12), transparent 60%),
+    radial-gradient(42vw 42vw at -6% 106%, rgba(27,87,176,.12), transparent 60%);
 }
 img{max-width:100%;display:block}
 a{color:var(--blue-deep)}
@@ -153,6 +162,23 @@ h1,h2,h3{margin:0;line-height:1;font-weight:400}
 .btn:hover::after,.btn:focus-visible::after{transform:translateY(-50%) scaleX(1);opacity:.55}
 .btn .ico{width:1.15em;height:1.15em;flex:none}
 
+/* Красно-синяя «комикс-лента» */
+.stripe{height:7px;background:repeating-linear-gradient(45deg,var(--red) 0 15px,var(--blue) 15px 30px)}
+
+/* Важная пометка (алерт) */
+.alert{display:flex;align-items:center;gap:1rem;background:var(--caption);
+  border:4px solid var(--red);box-shadow:6px 6px 0 var(--red-deep);
+  padding:1rem 1.2rem;margin-bottom:1.6rem}
+.alert .spider{width:46px;height:46px;flex:none}
+.alert b{font-family:'Russo One';font-weight:400;text-transform:uppercase;display:block;
+  color:var(--red-txt);margin-bottom:.2rem;font-size:1.05rem}
+.alert strong{font-weight:700;color:var(--red-txt)}
+.alert span{color:var(--ink)}
+
+/* Паучок в углу заголовка раздела */
+.sec-spider{position:absolute;top:-.2rem;right:0;pointer-events:none}
+.sec-spider .spider{width:54px;height:54px}
+
 /* ══════════════════════════════════════════════════════════════════════════
    5. ШАПКА + ВКЛАДКИ (сверху на десктопе, снизу на мобильном)
 ═══════════════════════════════════════════════════════════════════════════ */
@@ -227,17 +253,20 @@ main{position:relative;z-index:2}
 .vertical-date{writing-mode:vertical-rl;font-family:'Russo One';text-transform:uppercase;
   letter-spacing:.15em;color:var(--blue-deep);margin-top:1rem;font-size:1rem}
 
-/* План вечера — таймлайн */
+/* Программа праздника */
 .plan{margin-top:clamp(2rem,6vw,3.5rem)}
-.plan-list{list-style:none;margin:1.2rem 0 0;padding:0;display:grid;gap:.9rem}
-.plan-item{display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:start;
-  background:var(--paper);border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);
-  padding:.9rem 1.1rem;position:relative}
-.plan-item:nth-child(even){background:var(--paper-warm)}
-.plan-time{font-family:'Unbounded';font-weight:800;color:var(--red);font-size:1.05rem;
-  min-width:3.6em;line-height:1.1;padding-top:.1em}
-.plan-title{font-family:'Russo One';text-transform:uppercase;font-size:1.05rem;margin-bottom:.15rem}
-.plan-desc{color:var(--ink-soft);font-size:.98rem}
+.plan-gather{font-family:'Russo One';text-transform:uppercase;
+  font-size:clamp(1.15rem,4vw,1.6rem);color:var(--blue-deep);margin:1rem 0 .3rem}
+.plan-intro{color:var(--ink-soft);margin:0 0 1.1rem}
+.plan-list{list-style:none;margin:0;padding:0;display:grid;gap:.7rem;grid-template-columns:1fr}
+.plan-act{display:flex;align-items:center;gap:.85rem;background:var(--paper);
+  border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);padding:.7rem .95rem;
+  font-family:'Golos Text';font-weight:600}
+.plan-act:nth-child(even){background:var(--paper-warm)}
+.plan-act .dot{width:16px;height:16px;flex:none;border:3px solid var(--ink);border-radius:50%}
+.plan-act:nth-child(3n+1) .dot{background:var(--red)}
+.plan-act:nth-child(3n+2) .dot{background:var(--blue)}
+.plan-act:nth-child(3n) .dot{background:var(--caption)}
 
 /* — Как добраться — */
 .route-grid{display:grid;gap:1.4rem;grid-template-columns:1fr}
@@ -365,7 +394,7 @@ canvas.silk{position:fixed;inset:0;z-index:60;pointer-events:none}
 @media (min-width:720px){
   .hero-grid{grid-template-columns:1.6fr .8fr}
   .route-grid{grid-template-columns:1fr 1fr}
-  .music-panel{grid-template-columns:1fr 1fr}
+  .plan-list{grid-template-columns:1fr 1fr}
   .recipe-grid{grid-template-columns:repeat(2,1fr)}
   .rules-grid{grid-template-columns:1fr 1fr}
   .rules-grid .rule.key{grid-column:1 / -1}
@@ -381,7 +410,7 @@ canvas.silk{position:fixed;inset:0;z-index:60;pointer-events:none}
   .tabs{
     position:fixed;left:0;right:0;bottom:0;z-index:55;margin:0;
     background:var(--paper);border-top:4px solid var(--ink);
-    display:grid;grid-template-columns:repeat(6,1fr);gap:0;
+    display:grid;grid-template-columns:repeat(5,1fr);gap:0;
     padding-bottom:env(safe-area-inset-bottom,0);
   }
   .tab{flex-direction:column;align-items:center;gap:.1em;padding:.5em .1em;border-width:0;
@@ -437,11 +466,13 @@ canvas.silk{position:fixed;inset:0;z-index:60;pointer-events:none}
     </div>
     <nav class="tabs" role="tablist" aria-label="Разделы сайта" id="tabs"></nav>
   </div>
+  <div class="stripe" aria-hidden="true"></div>
 </header>
 
 <main id="main" class="wrap"></main>
 
 <footer class="site-footer">
+  <div class="stripe" aria-hidden="true"></div>
   <div class="wrap">
     <p id="footer-note">До встречи — будет здорово 🕸</p>
     <span class="spider" id="footer-spider" aria-hidden="true"></span>
@@ -452,7 +483,7 @@ canvas.silk{position:fixed;inset:0;z-index:60;pointer-events:none}
   <div class="wrap" style="padding:2rem 0">
     <p style="background:var(--caption);border:3px solid var(--ink);padding:1rem;font-weight:700">
       Для полной версии приглашения включите JavaScript. Кратко: день рождения, дата и место —
-      смотри сообщение от меня, а тут будут план вечера, маршрут, музыка, правила и коктейли.
+      смотри сообщение от меня, а тут будут программа, маршрут, фото, важные пометки и коктейли.
     </p>
   </div>
 </noscript>
@@ -479,19 +510,20 @@ const CONFIG = {
   coords:    "59.7499945,31.0500004", // широта,долгота — для маршрута в один тап
   station:   "станция Мга",       // ближайшая ж/д станция
 
-  /* ── ПЛАН ВЕЧЕРА ─────────────────────────────────────────────────────── */
+  /* ── ПРОГРАММА (без строгого тайминга) ───────────────────────────────── */
+  gather:    "Сбор гостей — с 12:00 дня",
+  planIntro: "Строгого расписания нет — всё по-домашнему. А в программе:",
   plan: [
-    { time:"12:00", title:"Сбор гостей",     desc:"Подтягиваемся, обнимаемся, занимаем места." },
-    { time:"13:00", title:"За стол",         desc:"Первый тост, горячее и поздравления." },
-    { time:"15:00", title:"Игры и воздух",   desc:"Двигаемся, играем, гуляем по округе." },
-    { time:"18:00", title:"Ужин и коктейли", desc:"Второй заход к столу, музыка и напитки." },
-    { time:"вечер", title:"Разъезд",         desc:"Догуливаем и вечером спокойно разъезжаемся (см. «Правила»)." },
+    "Идём на речку — купаемся",
+    "Немного волейбола, если захочется",
+    "Шашлыки",
+    "Торт",
+    "Напитки и музыка",
+    "Общение — всё как обычно",
   ],
 
   /* ── ССЫЛКИ ──────────────────────────────────────────────────────────── */
   trainUrl:  "https://rasp.yandex.ru/suburban/sankt-peterburg-ladozhskiy--mga-station/today", // расписание электричек: Ладожский → Мга
-  playlist:  "",                          // ⚠️ ВСТАВЬ ссылку на общий плейлист Яндекс.Музыки (с доступом на добавление)
-  playlistEmbed:"",                       // (по желанию) src iframe-плеера плейлиста
   mapEmbed:  "",                          // (по желанию) src iframe Яндекс.Карт: Поделиться → Вставить код → скопировать src
 
   /* ── ФОТО ПРОШЛЫХ ЛЕТ ────────────────────────────────────────────────── */
@@ -519,12 +551,12 @@ const CONFIG = {
     { src:"images/19-thumb.jpg", full:"images/19.jpg", alt:"Кадр с прошлых праздников — 19" },
   ],
 
-  /* ── ПРАВИЛА ─────────────────────────────────────────────────────────── */
+  /* ── ВАЖНЫЕ ПОМЕТКИ ──────────────────────────────────────────────────── */
   rules: [
-    { title:"Уезжаем вечером", text:"Никто не остаётся на ночь и до утра тоже — вечером все разъезжаются. Заранее гляньте обратную дорогу." },
-    { title:"Алкоголь — каждый себе", text:"Каждый покупает алкоголь сам. Исключение — пиво: берём из расчёта две баночки на человека." },
-    { title:"Музыка — общая", text:"Кидай свои треки в общий плейлист (раздел «Музыка») — соберём саундтрек вечера вместе. Что купить под коктейли — в разделе «Рецепты»." },
-    { title:"Главное правило", text:"Приходи в хорошем настроении. Остальное приложится.", key:true },
+    { title:"Уезжаем вечером", text:"Никто не остаётся до утра. Расходимся до последней электрички — это примерно 21:00–22:00. Заранее гляньте обратную дорогу." },
+    { title:"Алкоголь — каждый себе", text:"Крепкое и всё остальное каждый берёт сам. С меня — два ящика пива: по одной-две бутылки на человека, это лимит." },
+    { title:"Без перебора", text:"Напиваться не нужно — надеюсь, это мы уже переросли. Приехать к 12 и сразу хлестать водку — не наш вариант. Вечер длинный, себя бережём." },
+    { title:"Возьмите с собой", text:"Шлёпки или кроксы, плавки и купальники — идём на речку! Очень надеемся на хорошую погоду.", key:true },
   ],
 
   /* ── КОКТЕЙЛИ ────────────────────────────────────────────────────────── */
@@ -560,9 +592,10 @@ const $ = (s,el=document)=>el.querySelector(s);
 const esc = (s)=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const enc = encodeURIComponent;
 
-/* Паучок (SVG-строка). red=true — красное брюшко с песочными часами. */
-function spider(red){
-  const body = red ? '#E8262C' : '#14110F';
+/* Паучок (SVG-строка). Вариант: true/'red' — красный с песочными часами, 'blue' — синий, иначе чернила. */
+function spider(v){
+  const variant = v===true ? 'red' : (v===false||v==null ? 'ink' : v);
+  const body = variant==='red' ? '#E8262C' : (variant==='blue' ? '#1B57B0' : '#14110F');
   return `<svg class="spider" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
     <g fill="none" stroke="#14110F" stroke-width="4" stroke-linecap="round">
       <path d="M58 48 L80 40 L90 47"/><path d="M60 55 L83 55 L92 60"/>
@@ -573,7 +606,7 @@ function spider(red){
     <ellipse cx="50" cy="60" rx="15" ry="19" fill="${body}" stroke="#14110F" stroke-width="3"/>
     <circle cx="50" cy="38" r="10" fill="#14110F"/>
     <circle cx="46" cy="37" r="2.2" fill="#F6EFDD"/><circle cx="54" cy="37" r="2.2" fill="#F6EFDD"/>
-    ${red?'<path d="M44 53 L56 53 L44 67 L56 67 Z" fill="#14110F" opacity=".9"/>':''}
+    ${variant==='red'?'<path d="M44 53 L56 53 L44 67 L56 67 Z" fill="#14110F" opacity=".9"/>':''}
   </svg>`;
 }
 /* Паутина в углу */
@@ -615,22 +648,20 @@ const SECTIONS=[
   {id:'home',   n:'01', label:'Главная',       short:'Главная'},
   {id:'route',  n:'02', label:'Как добраться', short:'Дорога'},
   {id:'gallery',n:'03', label:'Галерея',       short:'Фото'},
-  {id:'music',  n:'04', label:'Музыка',        short:'Музыка'},
-  {id:'rules',  n:'05', label:'Правила',       short:'Правила'},
-  {id:'recipes',n:'06', label:'Рецепты',       short:'Рецепты'},
+  {id:'rules',  n:'04', label:'На заметку',    short:'Заметки'},
+  {id:'recipes',n:'05', label:'Рецепты',       short:'Рецепты'},
 ];
 
 function secHead(n,title,sub){
-  return `<div class="sec-head reveal"><span class="sec-num">${n}</span>
+  const col = parseInt(n,10)%2 ? 'blue' : 'red';
+  return `<div class="sec-head reveal"><span class="sec-spider" aria-hidden="true">${spider(col)}</span>
+    <span class="sec-num">${n}</span>
     <h2 class="sec-title">${esc(title)}</h2>${sub?`<p class="sec-sub">${sub}</p>`:''}</div>`;
 }
 
 /* ── Рендер: Главная ─────────────────────────────────────────────────────── */
 function renderHome(){
-  const plan=CONFIG.plan.map(p=>`<li class="plan-item reveal">
-      <span class="plan-time">${esc(p.time)}</span>
-      <span><span class="plan-title">${esc(p.title)}</span><br><span class="plan-desc">${esc(p.desc)}</span></span>
-    </li>`).join('');
+  const plan=CONFIG.plan.map(a=>`<li class="plan-act reveal"><span class="dot" aria-hidden="true"></span><span>${esc(a)}</span></li>`).join('');
   return `
   <span class="eyebrow reveal">${esc(CONFIG.eyebrow)}</span>
   <div class="hero-grid">
@@ -660,7 +691,9 @@ function renderHome(){
   </div>
   <div class="plan panel-card warm hf hf-fade">
     ${web('tr')}
-    <div class="caption-box">План вечера</div>
+    <div class="caption-box">Программа</div>
+    <p class="plan-gather">${esc(CONFIG.gather)}</p>
+    <p class="plan-intro">${esc(CONFIG.planIntro)}</p>
     <ul class="plan-list">${plan}</ul>
   </div>`;
 }
@@ -680,10 +713,13 @@ function renderRoute(){
           <circle cx="300" cy="166" r="16" fill="#F6EFDD" stroke="#14110F" stroke-width="4"/></g></svg>
       </div>`;
   return `
+    <div class="alert reveal">${spider('red')}
+      <span><b>Важно про электрички</b>Из-за строительства ВСМ-1 поезда с Московского вокзала <strong>не ходят</strong>. Садиться только на <strong>Ладожском вокзале</strong> или в <strong>Рыбацком</strong>.</span>
+    </div>
     <div class="route-grid">
-      <div class="route-card panel-card reveal">
+      <div class="route-card panel-card hf hf-fade reveal">
         ${web('br')}
-        <h3>${spider(false)}На машине или каршеринге</h3>
+        <h3>${spider('blue')}На машине или каршеринге</h3>
         <p>Часть ребят будет на своих машинах. Можно и на каршеринге — например, до ж/д станции Мга, а оттуда пара минут до места.</p>
         <div class="route-btns">
           <a class="btn btn--red" href="${m.yaAuto}" target="_blank" rel="noopener">Маршрут в Яндекс.Картах</a>
@@ -691,10 +727,10 @@ function renderRoute(){
           <a class="btn" href="${m.twogis}" target="_blank" rel="noopener">2ГИС</a>
         </div>
       </div>
-      <div class="route-card panel-card warm reveal">
+      <div class="route-card panel-card warm hf-b hf hf-fade reveal">
         ${web('br')}
-        <h3>${spider(true)}На электричке</h3>
-        <p>С Ладожского вокзала до «${esc(CONFIG.station)}», дальше совсем близко. Вариант для самых экономных — и вполне удобный.</p>
+        <h3>${spider('red')}На электричке</h3>
+        <p>Только с <b>Ладожского</b> вокзала или из <b>Рыбацкого</b> (с Московского сейчас нельзя — см. пометку выше) до «${esc(CONFIG.station)}», дальше совсем близко.</p>
         <span class="scrawl">сначала глянь расписание ${icoArrow}</span>
         <div class="route-btns">
           <a class="btn btn--blue" href="${esc(CONFIG.trainUrl)}" target="_blank" rel="noopener">Расписание электричек</a>
@@ -724,38 +760,7 @@ function renderGallery(){
     <div class="gallery-note caption-box reveal">${esc(note)}</div>`;
 }
 
-/* ── Рендер: Музыка ──────────────────────────────────────────────────────── */
-function renderMusic(){
-  const noteMark = `<svg class="note-mark" viewBox="0 0 200 160" aria-hidden="true">
-    <g fill="none" stroke="#14110F" stroke-width="4" stroke-linecap="round">
-      <path d="M20 120 Q60 60 120 70 Q160 76 178 40"/>
-    </g>
-    <g fill="#E8262C" stroke="#14110F" stroke-width="4">
-      <circle cx="24" cy="126" r="16"/><circle cx="120" cy="90" r="14"/></g>
-    <g fill="none" stroke="#14110F" stroke-width="4"><path d="M39 122 L39 60"/><path d="M133 88 L133 34"/></g>
-    <g fill="#1B57B0"><circle cx="70" cy="52" r="5"/><circle cx="150" cy="48" r="5"/><circle cx="100" cy="120" r="5"/></g>
-  </svg>`;
-  const cta = CONFIG.playlist
-    ? `<a class="btn btn--red" href="${esc(CONFIG.playlist)}" target="_blank" rel="noopener">Добавить трек в общий плейлист</a>`
-    : `<button class="btn" type="button" disabled title="Ссылка появится позже">Ссылка на плейлист скоро</button>`;
-  const embed = CONFIG.playlistEmbed
-    ? `<div class="music-frame reveal"><iframe src="${esc(CONFIG.playlistEmbed)}" title="Плейлист вечеринки" loading="lazy" allow="encrypted-media"></iframe></div>`
-    : '';
-  return `
-    <div class="music-panel panel-card reveal">
-      ${web('tl')}
-      <div class="music-big">${noteMark}</div>
-      <div class="music-cta">
-        <p style="font-family:'Russo One';text-transform:uppercase;font-size:1.4rem;margin:0 0 1rem">Собираем плейлист вместе</p>
-        ${cta}
-        <p class="music-hint">кидай любимые треки — соберём саундтрек вечера</p>
-        <p class="music-plus">Чтобы добавлять треки, нужен Яндекс Плюс.</p>
-      </div>
-    </div>
-    ${embed}`;
-}
-
-/* ── Рендер: Правила ─────────────────────────────────────────────────────── */
+/* ── Рендер: Важные пометки ──────────────────────────────────────────────── */
 function renderRules(){
   const items=CONFIG.rules.map((r,i)=>`<div class="rule reveal ${r.key?'key':''}">
       <span class="rule-num">${web('tl')}<b>${String(i+1).padStart(2,'0')}</b></span>
@@ -785,16 +790,16 @@ function renderRecipes(){
     <div class="recipe-grid">${cards}</div>`;
 }
 
-const RENDER={home:renderHome,route:renderRoute,gallery:renderGallery,music:renderMusic,rules:renderRules,recipes:renderRecipes};
+const RENDER={home:renderHome,route:renderRoute,gallery:renderGallery,rules:renderRules,recipes:renderRecipes};
 
 /* ── Сборка страницы ─────────────────────────────────────────────────────── */
 const motionOK = matchMedia('(prefers-reduced-motion: no-preference)').matches;
 
 function build(){
   // паучки в статичных местах
-  $('#brand-spider').innerHTML=spider(false);
-  $('#dangler-spider').innerHTML=spider(true);
-  $('#footer-spider').innerHTML=spider(false);
+  $('#brand-spider').innerHTML=spider('blue');
+  $('#dangler-spider').innerHTML=spider('red');
+  $('#footer-spider').innerHTML=spider('blue');
   $('#brand-sub').textContent = 'жду тебя';
   $('#footer-note').textContent = 'До встречи — будет здорово';
 
