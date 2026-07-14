@@ -712,7 +712,7 @@ function renderGallery(){
   let shots;
   if(CONFIG.photos && CONFIG.photos.length){
     shots=CONFIG.photos.map((p,i)=>`<button class="shot reveal" type="button" data-i="${i}" style="--r:${rots[i%rots.length]}" aria-label="Открыть фото: ${esc(p.alt||'фото')}">
-      <img src="${esc(p.src)}" alt="${esc(p.alt||'')}" loading="lazy" decoding="async"></button>`).join('');
+      <img src="${esc(p.src)}" alt="${esc(p.alt||'')}" decoding="async"></button>`).join('');
   }else{
     shots=Array.from({length:6}).map((_,i)=>`<div class="shot empty reveal hf ${i%2?'hf-b':''}" style="--r:${rots[i%rots.length]}" aria-hidden="true">
       ${spider(i%3===0)}<span>фото скоро</span></div>`).join('');
